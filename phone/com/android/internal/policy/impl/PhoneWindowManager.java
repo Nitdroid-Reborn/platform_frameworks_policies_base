@@ -2101,7 +2101,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             Display d = ((WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE))
                     .getDefaultDisplay();
             if (d.getWidth() > d.getHeight()) {
-                mPortraitRotation = Surface.ROTATION_90;
+                mPortraitRotation = Surface.ROTATION_270;
                 mLandscapeRotation = Surface.ROTATION_0;
             } else {
                 mPortraitRotation = Surface.ROTATION_0;
@@ -2122,7 +2122,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             // or orientation sensor disabled
             //or case.unspecified
             if (mLidOpen) {
-                return mLidOpenRotation;
+                return Surface.ROTATION_0;
             } else if (mDockMode == Intent.EXTRA_DOCK_STATE_CAR && mCarDockRotation >= 0) {
                 return mCarDockRotation;
             } else if (mDockMode == Intent.EXTRA_DOCK_STATE_DESK && mDeskDockRotation >= 0) {
@@ -2133,7 +2133,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     int curRotation = mOrientationListener.getCurrentRotation();
                     return curRotation >= 0 ? curRotation : lastRotation;
                 }
-                return Surface.ROTATION_0;
+                return Surface.ROTATION_270;
             }
         }
     }
@@ -2234,14 +2234,15 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     void updateRotation(int animFlags) {
         mPowerManager.setKeyboardVisibility(mLidOpen);
-        int rotation = Surface.ROTATION_0;
+        int rotation = Surface.ROTATION_270;
         if (mLidOpen) {
-            rotation = mLidOpenRotation;
+            rotation = Surface.ROTATION_0;
         } else if (mDockMode == Intent.EXTRA_DOCK_STATE_CAR && mCarDockRotation >= 0) {
             rotation = mCarDockRotation;
         } else if (mDockMode == Intent.EXTRA_DOCK_STATE_DESK && mDeskDockRotation >= 0) {
             rotation = mDeskDockRotation;
         }
+        Log.d(TAG, "updateRotat:" + rotation + ", mLidOpen=" + mLidOpen);
         //if lid is closed orientation will be portrait
         try {
             //set orientation on WindowManager
